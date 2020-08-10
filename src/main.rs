@@ -22,7 +22,7 @@ pub enum Expression {
 
 fn main() {
     let mut input = String::new();
-    let mut f = File::open("in.ex").unwrap();
+    let mut f = File::open("in.drf").unwrap();
     f.read_to_string(&mut input).unwrap();
     //lli-3.9 out.ll ; echo $?
 
@@ -33,7 +33,8 @@ fn main() {
         codegen(parsed_input);
     }
 }
-use self::arithmetic::*;
+
+
 parser!{
     /// Doc comment
     grammar arithmetic() for str {
@@ -48,21 +49,27 @@ parser!{
            = e:(equal() ** ("\n" _)) "\n"? { e }
 
         rule equal()->Expression
-            =i:identifier() _ "=" _ s:atom() {Expression::Assign(i, Box::new(s))} 
+            =i:identifier() _ "=" _ s:sum() {Expression::Assign(i, Box::new(s))} 
             /sum()
+           
     
         rule sum() -> Expression
             = l:product() _ "+" _ r:product() { Expression::Sum(Box::new(l), Box::new(r)) }
             / l:product() _ "-" _ r:product() {Expression::Subtract(Box::new(l), Box::new(r))}
+            /"inc" _ l:atom() {Expression::Sum(Box::new(l), Box::new(Expression::Number(1)))}
+            /"dec" _ l:atom() {Expression::Subtract(Box::new(l), Box::new(Expression::Number(1)))}
             / product()
+           
     
         rule product() -> Expression
             = l:atom() _ "*" _ r:atom() { Expression::Product(Box::new(l), Box::new(r)) }
             / l:atom() _ "/" _ r:atom() { Expression::Division(Box::new(l), Box::new(r)) }
             / atom()
-    
+            
+
         rule atom() -> Expression
             = reference()
+            / "(" _ v:sum() _ ")" { v }
 
         rule reference()->Expression
             =l:identifier() {Expression::Ref(l)}
