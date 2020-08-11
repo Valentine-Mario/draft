@@ -6,7 +6,6 @@ use std::fs::File;
 use std::io::Read;
 use crate::builder::codegen;
 use crate::parser::*;
-use crate::parser::Expression;
 use std::process::Command;
 
 pub struct REPL{

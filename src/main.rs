@@ -5,7 +5,6 @@ mod builder;
 use crate::builder::codegen;
 mod parser;
 use crate::parser::*;
-use crate::parser::Expression;
 use std::fs::File;
 use std::io::Read;
 mod repl;
@@ -21,7 +20,7 @@ fn main() {
         repl.run();
     }else{
         args.next();
-        let file = match args.next() {
+       match args.next() {
             Some(arg) => {
                 let mut input = String::new();
                 let mut f = File::open(Path::new(&arg)).unwrap();
