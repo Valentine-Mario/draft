@@ -64,6 +64,7 @@ parser!{
         rule product() -> Expression
             = l:atom() _ "*" _ r:atom() { Expression::Product(Box::new(l), Box::new(r)) }
             / l:atom() _ "/" _ r:atom() { Expression::Division(Box::new(l), Box::new(r)) }
+            /"square" _ l:atom() { Expression::Product(Box::new(l.clone()), Box::new(l)) }
             / atom()
             
 
