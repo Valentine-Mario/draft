@@ -48,20 +48,20 @@ impl REPL{
                     let mut contents = String::new();
                     f.read_to_string(&mut contents).expect("There was an error reading from the file");
                     let parsed_input = arithmetic::expression(&contents).unwrap();
-                    println!("{:?}", parsed_input);
                     
                     unsafe {
                         codegen(parsed_input);
                     }
+                    let llvm_output = Command::new("sh").args(&["cmd.sh"]).output().expect("error running command");
+                    println!("{:?}", io::stdout().write_all(&llvm_output.stdout).unwrap());
                 }
                 _=>{
                     let parsed_input = arithmetic::expression(&buffer).unwrap();
-                    println!("{:?}", parsed_input);
                     
                     unsafe {
                         codegen(parsed_input);
                     }
-                    let llvm_output = Command::new("cat").args(&["out.ll"]).output().expect("error running command");
+                    let llvm_output = Command::new("sh").args(&["cmd.sh"]).output().expect("error running command");
                     println!("{:?}", io::stdout().write_all(&llvm_output.stdout).unwrap());
                 }
             }

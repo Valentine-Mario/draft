@@ -11,6 +11,9 @@ mod repl;
 use crate::repl::*;
 use std::env::args;
 use std::path::Path;
+use std::process::Command;
+use std::io;
+use std::io::Write;
 
 
 fn main() {
@@ -33,6 +36,8 @@ fn main() {
                 unsafe {
                     codegen(parsed_input);
                 }
+                let llvm_output = Command::new("sh").args(&["cmd.sh"]).output().expect("error running command");
+                println!("{:?}", io::stdout().write_all(&llvm_output.stdout).unwrap());
             },
             None => println!("Didn't get a query string"),
         };
