@@ -8,7 +8,8 @@ pub enum Expression {
     Division(Box<Expression>, Box<Expression>),
     Subtract(Box<Expression>, Box<Expression>),
     Ref(String),
-    Assign(String, Box<Expression>)
+    Assign(String, Box<Expression>),
+    If(Box<Expression>, Vec<Expression>, Vec<Expression>),
 }
 
 
@@ -26,9 +27,14 @@ parser!{
            = e:(equal() ** ("\n" _)) "\n"? { e }
 
         rule equal()->Expression
-            =i:identifier() _ "=" _ s:sum() {Expression::Assign(i, Box::new(s))} 
+            = if_statement()
+            /i:identifier() _ "=" _ s:sum() {Expression::Assign(i, Box::new(s))} 
             /sum()
-           
+        
+        rule if_statement() ->Expression
+            = "if" _ e:equal() _ "{" _"\n"? _ then_statement:statements() _ "}" _ "\n"? _ "else" _ "{" _ "\n"? _ else_statement:statements() _ "}" {
+                Expression::If(Box::new(e), then_statement, else_statement)
+            }
     
         rule sum() -> Expression
             = l:product() _ "+" _ r:product() { Expression::Sum(Box::new(l), Box::new(r)) }

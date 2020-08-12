@@ -1,5 +1,5 @@
 [package]
-name = "llvm"
+name = "draft"
 version = "0.1.0"
 authors = ["valentine-mario <valentine13400@gmail.com>"]
 edition = "2018"

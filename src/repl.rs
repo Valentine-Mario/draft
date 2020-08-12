@@ -20,7 +20,7 @@ impl REPL{
     }
 
     pub fn run(&mut self) {
-        println!("The draft repl");
+        println!("The Draft repl");
         let mut repl_string=String::from("");
         loop{
             let mut buffer = String::new();
@@ -35,10 +35,10 @@ impl REPL{
             self.command.push(buffer.to_string());
             match buffer {
                 "quit"=>{
-                    println!("Farewell! Have a great day!");
+                    println!("Exiting the repl!");
                     std::process::exit(0);
                 }
-                "load_draft"=>{
+                "load"=>{
                     print!("Please enter the path to the file you wish to load: ");
                     io::stdout().flush().expect("Unable to flush stdout");
                     let mut tmp = String::new();
@@ -58,6 +58,9 @@ impl REPL{
                 }
                 "history"=>{
                     println!("{}", repl_string);
+                }
+                "clear"=>{
+                    repl_string=String::from("");
                 }
                 _=>{
                     repl_string.push_str(buffer);
