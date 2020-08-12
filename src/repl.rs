@@ -21,6 +21,7 @@ impl REPL{
 
     pub fn run(&mut self) {
         println!("The draft repl");
+        let mut repl_string=String::from("");
         loop{
             let mut buffer = String::new();
             let stdin = io::stdin();
@@ -55,8 +56,13 @@ impl REPL{
                     let llvm_output = Command::new("sh").args(&["cmd.sh"]).output().expect("error running command");
                     println!("{:?}", io::stdout().write_all(&llvm_output.stdout).unwrap());
                 }
+                "history"=>{
+                    println!("{}", repl_string);
+                }
                 _=>{
-                    let parsed_input = arithmetic::expression(&buffer).unwrap();
+                    repl_string.push_str(buffer);
+                    repl_string.push_str("\n");
+                    let parsed_input = arithmetic::expression(&repl_string).unwrap();
                     
                     unsafe {
                         codegen(parsed_input);
